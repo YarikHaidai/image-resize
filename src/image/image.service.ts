@@ -1,10 +1,11 @@
 import {Injectable} from "@nestjs/common";
-let sharp = require('sharp');
+import * as sharp from 'sharp';
 
 @Injectable()
 export class ImageService {
-    resize = async (width, height, path) => {
-        let buffer = await sharp(path)
+    async resize(width, height, path) {
+        // TODO: add stream
+        const buffer = await sharp(path)
             .resize(width, height, {
                 fit: sharp.fit.inside,
                 withoutEnlargement: true,
