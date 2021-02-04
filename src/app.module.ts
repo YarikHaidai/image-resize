@@ -2,10 +2,15 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ImageController } from './image/image.controller';
-import {ImageService} from "./image/image.service";
+import { ImageService } from "./image/image.service";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { UserModule } from './user/user.module';
 
 @Module({
-  imports: [],
+  imports: [
+    TypeOrmModule.forRoot(),
+    UserModule
+  ],
   controllers: [AppController, ImageController],
   providers: [AppService, ImageService],
 })

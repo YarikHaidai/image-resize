@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import * as sharp from "sharp";
 import * as fs from "fs";
 import { Duplex } from "stream";
-import { ImageResizeDto } from "./dto/image-resize.dto";
+import { ImageResizeDto } from "./dto";
 
 @Injectable()
 export class ImageService {
