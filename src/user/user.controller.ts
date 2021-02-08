@@ -3,7 +3,6 @@ import { UserService } from "./user.service";
 import { User } from "./user.entity";
 import { CreateUserDto, ShowUserDto } from "./dto";
 import { ApiCreatedResponse } from "@nestjs/swagger";
-import { plainToClass } from "class-transformer";
 
 @Controller('users')
 export class UserController {
@@ -13,7 +12,6 @@ export class UserController {
     @Get(':id')
     @ApiCreatedResponse({type: ShowUserDto})
     show(@Param('id') id: string) {
-        // return plainToClass(ShowUserDto, this.service.find(id));
         return this.service.find(id);
     }
 

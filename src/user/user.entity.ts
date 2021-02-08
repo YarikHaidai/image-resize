@@ -1,6 +1,5 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { IsEmail } from "class-validator";
-import { Exclude } from "class-transformer";
 
 @Entity()
 export class User {
