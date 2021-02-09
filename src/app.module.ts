@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
+    UserModule,
     AuthModule
   ],
   controllers: [AppController, ImageController],
