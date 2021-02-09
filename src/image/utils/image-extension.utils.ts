@@ -1,5 +1,5 @@
 export const imageExtensionFilter = (request, image, callback) => {
-    if ( !image.originalname.match(/\.(jpg|jpeg|png|gif)$i/) ) {
+    if ( !image.originalname.match(/\b.(jpg|jpeg|gif|png)\b$/) ) {
         return callback(new Error('Only image files are allowed!'), false);
     }
 

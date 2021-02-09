@@ -1,4 +1,4 @@
-import { Controller, Get, Header, Post, Query, Res, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Controller, Get, Header, Post, Query, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { imageFileName } from "./utils/image-name.utils";
 import { imageExtensionFilter } from "./utils/image-extension.utils";
@@ -6,12 +6,14 @@ import { diskStorage } from "multer";
 import { ImageResizeDto, ImageResponseDto } from "./dto";
 import { ImageService } from "./image.service";
 import { ApiCreatedResponse } from "@nestjs/swagger";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 
 @Controller("image")
 export class ImageController {
     constructor(private readonly imageService: ImageService) {}
 
     @Post("upload")
+    @UseGuards(JwtAuthGuard)
     @UseInterceptors(
         FileInterceptor("image", {
             storage: diskStorage({
@@ -22,8 +24,7 @@ export class ImageController {
         })
     )
     @ApiCreatedResponse({ type: ImageResponseDto })
-    upload(@UploadedFile() image): ImageResponseDto {
-
+    upload(@UploadedFile() image) {
         return {path: image.path, originalName: image.originalName};
     }
 
