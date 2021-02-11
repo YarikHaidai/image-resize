@@ -1,4 +1,4 @@
 export const jwtConstants = {
-    // TODO: add to env
-    secret: 'secretKey',
+  // TODO: add to env
+  secret: "secretKey"
 };
