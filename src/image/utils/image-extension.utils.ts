@@ -1,7 +1,9 @@
-export const imageExtensionFilter = (request, image, callback) => {
-    if ( !image.originalname.match(/\b.(jpg|jpeg|gif|png)\b$/) ) {
-        return callback(new Error('Only image files are allowed!'), false);
-    }
+import { BadRequestException } from "@nestjs/common";
 
-    callback(null, true);
-}
+export const imageExtensionFilter = (request, image, callback) => {
+  if (!image.originalname.match(/\.(jpg|jpeg|png)$/i)) {
+    return callback(new BadRequestException("Only image files are allowed!"), false);
+  }
+
+  callback(null, true);
+};
