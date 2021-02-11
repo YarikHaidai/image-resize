@@ -1,27 +1,47 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { IsEmail } from "class-validator";
+import {
+    BeforeInsert,
+    BeforeUpdate,
+    Column,
+    CreateDateColumn,
+    Entity, OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn
+} from "typeorm";
+import * as bcrypt from "bcrypt";
+import { ImageEntity } from "../image/image.entity";
 
-@Entity()
-export class User {
-    @PrimaryGeneratedColumn()
-    id: number;
+@Entity("user")
+export class UserEntity {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({ nullable: false })
-    name: string;
+  @Column({ nullable: false })
+  name: string;
 
-    @Column({ nullable: false })
-    surname: string;
+  @Column({ nullable: false })
+  surname: string;
 
-    @Column()
-    @IsEmail()
-    email: string;
+  @Column()
+  email: string;
 
-    @Column()
-    password: string;
+  @Column()
+  password: string;
 
-    @CreateDateColumn()
-    created_at: string;
+  @OneToMany(type => ImageEntity, imageEntity => imageEntity.user)
+  images: ImageEntity[];
 
-    @UpdateDateColumn()
-    updated_at: string;
+  @CreateDateColumn()
+  created_at: string;
+
+  @UpdateDateColumn()
+  updated_at: string;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async setPassword() {
+    if (this.password) {
+      // TODO - add to env salts length
+      this.password = await bcrypt.hash(this.password, 10);
+    }
+  }
 }

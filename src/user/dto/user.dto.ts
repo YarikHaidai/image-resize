@@ -1,29 +1,15 @@
-import { IsDate, IsNumber, IsString } from "class-validator";
-import { Exclude, Expose } from "class-transformer";
+import { ApiProperty } from "@nestjs/swagger";
 
-@Exclude()
-export class ShowUserDto {
+export class UserDto {
+  @ApiProperty()
+  id: number;
 
-    @Expose()
-    @IsNumber()
-    id: string;
+  @ApiProperty()
+  name: string;
 
-    @Expose()
-    @IsString()
-    name: string;
+  @ApiProperty()
+  surname: string;
 
-    @Expose()
-    @IsString()
-    surname: string;
-
-    @IsString()
-    email: string;
-
-    @Expose()
-    @IsDate()
-    created_at: string;
-
-    @Expose()
-    @IsDate()
-    updated_at: string;
+  @ApiProperty()
+  email: string;
 }

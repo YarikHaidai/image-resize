@@ -1,33 +1,40 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from "./user.entity";
-import { CreateUserDto } from "./dto";
-import * as bcrypt from "bcrypt";
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { UserEntity } from "./user.entity";
+import { UserDto } from "./dto";
+import { RegisterUserDto } from "../auth/dto";
 
 @Injectable()
 export class UserService {
-    constructor(@InjectRepository(User) private userRepository: Repository<User>) { }
+  constructor(@InjectRepository(UserEntity) private userRepository: Repository<UserEntity>) {}
 
-    async create(user: CreateUserDto): Promise<User> {
-        // TODO - add to env salts length
-        user.password = await bcrypt.hash(user.password, 10);
-        return this.userRepository.save(user);
-    }
+  async create(user: RegisterUserDto): Promise<UserDto> {
+    const newUser = await this.userRepository.save(user);
+    return this.buildDto(newUser);
+  }
 
-    findByEmail(email: string) : Promise<User> {
-        return this.userRepository.findOne({'email' : email});
+  async findByEmail(email: string): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({ email });
+    if (!user) {
+      throw new BadRequestException("User not found");
     }
+    return user;
+  }
 
-    find(id: string): Promise<User> {
-        return this.userRepository.findOne(id)
+  async find(id: string): Promise<UserDto> {
+    const user = await this.userRepository.findOne(id);
+    if (!user) {
+      throw new BadRequestException("User not found");
     }
+    return this.buildDto(user);
+  }
 
-    all() : Promise<User[]> {
-        return this.userRepository.find();
-    }
+  async remove(id: string): Promise<void> {
+    await this.userRepository.delete(id);
+  }
 
-    async remove(id: string): Promise<void> {
-        await this.userRepository.delete(id);
-    }
+  buildDto(user: UserEntity): UserDto {
+    return { id: user.id, name: user.name, surname: user.surname, email: user.email };
+  }
 }
