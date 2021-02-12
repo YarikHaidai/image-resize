@@ -9,9 +9,12 @@ import {
 } from "typeorm";
 import * as bcrypt from "bcrypt";
 import { ImageEntity } from "../image/image.entity";
+import { ConfigService } from "../config/config.service";
 
 @Entity("user")
 export class UserEntity {
+  constructor(private configService: ConfigService) {}
+
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -40,8 +43,7 @@ export class UserEntity {
   @BeforeUpdate()
   async setPassword() {
     if (this.password) {
-      // TODO - add to env salts length
-      this.password = await bcrypt.hash(this.password, 10);
+      this.password = await bcrypt.hash(this.password, this.configService.getVariable('SALT_LENGTH'));
     }
   }
 }
