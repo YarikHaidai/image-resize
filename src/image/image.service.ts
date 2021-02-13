@@ -7,6 +7,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { ImageEntity } from "./image.entity";
 import { Repository } from "typeorm";
 import { UserEntity } from "../user/user.entity";
+import { ImageDto } from "./dto/image.dto";
 
 @Injectable()
 export class ImageService {
@@ -16,7 +17,7 @@ export class ImageService {
     const image = new ImageEntity();
     image.user = user;
     image.path = path;
-    return  this.imageRepository.save(image);
+    return this.imageRepository.save(image);
   }
 
   async resize(imageResizeDto: ImageResizeDto): Promise<Duplex> {
@@ -30,5 +31,16 @@ export class ImageService {
 
     const readableStream = fs.createReadStream(path);
     return readableStream.pipe(resizeTransform);
+  }
+
+  async getUserImages(userId): Promise<ImageDto[]> {
+    const response = [];
+    const images = await this.imageRepository.find({ user: userId });
+    images.forEach( image => response.push(this.buildDto(image)) );
+    return response;
+  }
+
+  buildDto(image: ImageEntity): ImageDto {
+    return { id: image.id, path: image.path, created_at: image.created_at };
   }
 }

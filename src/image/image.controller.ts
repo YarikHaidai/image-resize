@@ -17,13 +17,14 @@ import { imageExtensionFilter } from "./utils/image-extension.utils";
 import { diskStorage } from "multer";
 import { ImageResizeDto, ImageResponseDto } from "./dto";
 import { ImageService } from "./image.service";
-import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/guard/jwt-auth.guard";
 import { extname } from "path";
+import { ImageDto } from "./dto/image.dto";
 
 @ApiTags("Image")
 @UseGuards(JwtAuthGuard)
-@Controller("image")
+@Controller("images")
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
@@ -55,5 +56,11 @@ export class ImageController {
 
     const image = await this.imageService.resize({ ...imageResizeDto });
     return image.pipe(response);
+  }
+
+  @Get('/')
+  @ApiOkResponse({ type: ImageDto, isArray: true })
+  async getImages(@Req() request): Promise<ImageDto[]> {
+    return this.imageService.getUserImages(request.user.id);
   }
 }
