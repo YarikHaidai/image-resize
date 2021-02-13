@@ -1,7 +1,7 @@
 import {
+  BadRequestException,
   Controller,
   Get,
-  Header,
   Post,
   Query,
   Req,
@@ -11,6 +11,7 @@ import {
   UseInterceptors
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
+import * as fs from "fs";
 import { imageFileName } from "./utils/image-name.utils";
 import { imageExtensionFilter } from "./utils/image-extension.utils";
 import { diskStorage } from "multer";
@@ -18,6 +19,7 @@ import { ImageResizeDto, ImageResponseDto } from "./dto";
 import { ImageService } from "./image.service";
 import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/guard/jwt-auth.guard";
+import { extname } from "path";
 
 @ApiTags("Image")
 @UseGuards(JwtAuthGuard)
@@ -43,9 +45,13 @@ export class ImageController {
   }
 
   @Get("resize")
-  @Header("Content-Type", "image/png")
   async resize(@Query() imageResizeDto: ImageResizeDto, @Res() response) {
-    response.setHeader("Content-Type", "image/png");
+    if (!fs.existsSync(imageResizeDto.path)) {
+       throw new BadRequestException();
+    }
+
+    const extension = extname(imageResizeDto.path).replace('.', '');
+    response.setHeader("Content-Type", `image/${extension}`);
 
     const image = await this.imageService.resize({ ...imageResizeDto });
     return image.pipe(response);
