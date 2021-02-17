@@ -15,7 +15,7 @@ export class UserController {
   @Get(":id")
   @ApiOkResponse({ type: UserDto })
   getUser(@Param("id") id: string) {
-    return this.service.find(id);
+    return this.service.findById(id);
   }
 
 }

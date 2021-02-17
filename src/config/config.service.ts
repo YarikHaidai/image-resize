@@ -1,13 +1,17 @@
-import { Injectable } from '@nestjs/common';
-import * as dotenv from 'dotenv';
+import { Injectable } from "@nestjs/common";
+import * as dotenv from "dotenv";
 
-dotenv.config({ path: '.env' });
+dotenv.config({ path: ".env" });
 
 @Injectable()
 export class ConfigService {
 
-  getVariable(key: string): string {
-    return process.env[key];
+  static getVariable(key: string) {
+    const variable = process.env[key];
+    if (!variable) {
+      throw new Error(`Environment variable ${key} is undefined`);
+    }
+    return variable;
   }
 
   static getOrmConfig() {
@@ -19,19 +23,19 @@ export class ConfigService {
       ORM_PORT,
       ORM_DATABASE,
       ORM_ENTITIES,
-      ORM_SYNCHRONIZE,
+      ORM_SYNCHRONIZE
     } = process.env;
 
     return {
-      "type": ORM_TYPE || 'mysql',
-      "host": ORM_HOST || 'localhost',
-      "port": ORM_PORT || '3306',
-      "username": ORM_USER || 'root',
-      "password": ORM_PASSWORD || 'awdasd',
-      "database": ORM_DATABASE || 'nest',
-      "entities": [ORM_ENTITIES || 'dist/**/*.entity{.ts,.js}'],
+      "type": ORM_TYPE || "mysql",
+      "host": ORM_HOST || "localhost",
+      "port": ORM_PORT || "3306",
+      "username": ORM_USER || "root",
+      "password": ORM_PASSWORD || "awdasd",
+      "database": ORM_DATABASE || "nest",
+      "entities": [ORM_ENTITIES || "dist/**/*.entity{.ts,.js}"],
       "synchronize": ORM_SYNCHRONIZE || true
-    }
+    };
   }
 }
 

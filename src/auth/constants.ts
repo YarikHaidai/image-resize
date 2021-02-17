@@ -1,4 +1,15 @@
+import { ConfigService } from "../config/config.service";
+
 export const jwtConstants = {
-  // TODO: add to env
-  secret: "URePdILXXp7ZfPeKZe5PGexBRXCVwns06ra2zk8M8t2qVsLdGDvhe"
+  secret: ConfigService.getVariable('JWT_SECRET'),
+  token: {
+    signOptions: {
+      expiresIn: "60m"
+    }
+  },
+  refreshToken: {
+    signOptions: {
+      expiresIn: "120m"
+    }
+  }
 };

@@ -1,7 +1,7 @@
 import {
   BadRequestException,
   Controller,
-  Get,
+  Get, ParseIntPipe,
   Post,
   Query,
   Req,
@@ -21,6 +21,9 @@ import { ApiCreatedResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/guard/jwt-auth.guard";
 import { extname } from "path";
 import { ImageDto } from "./dto/image.dto";
+import { Pagination } from "nestjs-typeorm-paginate";
+import { ImageEntity } from "./image.entity";
+import { ConfigService } from "../config/config.service";
 
 @ApiTags("Image")
 @UseGuards(JwtAuthGuard)
@@ -39,8 +42,8 @@ export class ImageController {
     })
   )
   @ApiCreatedResponse({ type: ImageResponseDto })
-  upload(@UploadedFile() image, @Req() request) {
-    this.imageService.upload(request.user, image.path);
+  async upload(@UploadedFile() image, @Req() request) {
+    await this.imageService.upload(request.user, image.path);
 
     return { path: image.path, originalName: image.originalName };
   }
@@ -48,7 +51,7 @@ export class ImageController {
   @Get("resize")
   async resize(@Query() imageResizeDto: ImageResizeDto, @Res() response) {
     if (!fs.existsSync(imageResizeDto.path)) {
-       throw new BadRequestException();
+       throw new BadRequestException('File not loaded');
     }
 
     const extension = extname(imageResizeDto.path).replace('.', '');
@@ -58,9 +61,18 @@ export class ImageController {
     return image.pipe(response);
   }
 
-  @Get('/')
+  @Get('/get-user-images')
   @ApiOkResponse({ type: ImageDto, isArray: true })
-  async getImages(@Req() request): Promise<ImageDto[]> {
-    return this.imageService.getUserImages(request.user.id);
+  async getImages(
+    @Req() request,
+    @Query('page', ParseIntPipe) page: number = 1,
+    @Query('limit', ParseIntPipe) limit: number = 10
+  ): Promise<Pagination<ImageEntity>> {
+    const host = ConfigService.getVariable('APP_HOST');
+    return this.imageService.getUserImages(request.user.id, {
+      page,
+      limit,
+      route: host + '/images/get-user-images',
+    });
   }
 }

@@ -13,8 +13,6 @@ import { ConfigService } from "../config/config.service";
 
 @Entity("user")
 export class UserEntity {
-  constructor(private configService: ConfigService) {}
-
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -43,7 +41,7 @@ export class UserEntity {
   @BeforeUpdate()
   async setPassword() {
     if (this.password) {
-      this.password = await bcrypt.hash(this.password, this.configService.getVariable('SALT_LENGTH'));
+      this.password = await bcrypt.hash(this.password, parseInt(ConfigService.getVariable('SALT_LENGTH')));
     }
   }
 }

@@ -8,6 +8,11 @@ import { ImageEntity } from "./image.entity";
 import { Repository } from "typeorm";
 import { UserEntity } from "../user/user.entity";
 import { ImageDto } from "./dto/image.dto";
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class ImageService {
@@ -33,12 +38,24 @@ export class ImageService {
     return readableStream.pipe(resizeTransform);
   }
 
-  async getUserImages(userId): Promise<ImageDto[]> {
-    const response = [];
-    const images = await this.imageRepository.find({ user: userId });
-    images.forEach( image => response.push(this.buildDto(image)) );
-    return response;
+  async getUserImages(userId, options): Promise<Pagination<ImageEntity>> {
+    const queryBuilder = this.imageRepository.createQueryBuilder('i');
+    queryBuilder.where('userId', userId)
+
+    // TODO -- ??
+    return paginate<ImageEntity>(queryBuilder, options);
   }
+
+  // async paginate(options: IPaginationOptions): Promise<Pagination<ImageEntity>> {
+  //   return paginate<ImageEntity>(this.imageRepository, options);
+  // }
+
+  // async getUserImages(userId, options): Promise<ImageDto[]> {
+  //   const response = [];
+  //   const images = await this.imageRepository.find({ user: userId });
+  //   images.forEach( image => response.push(this.buildDto(image)) );
+  //   return response;
+  // }
 
   buildDto(image: ImageEntity): ImageDto {
     return { id: image.id, path: image.path, created_at: image.created_at };

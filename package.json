@@ -2,7 +2,7 @@
   "name": "image-resize",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Yaroslav Haidai",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
@@ -36,6 +36,7 @@
     "dotenv": "^8.2.0",
     "md5-typescript": "^1.0.5",
     "mysql2": "^2.2.5",
+    "nestjs-typeorm-paginate": "^2.3.2",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
