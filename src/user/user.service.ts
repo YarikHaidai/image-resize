@@ -10,7 +10,6 @@ export class UserService {
   constructor(@InjectRepository(UserEntity) private userRepository: Repository<UserEntity>) {}
 
   async create(user: RegisterUserDto): Promise<UserDto> {
-    // TODO - ??
     const entity = Object.assign(new UserEntity(), user);
     const newUser = await this.userRepository.save(entity);
     return this.buildDto(newUser);
@@ -30,10 +29,6 @@ export class UserService {
       throw new BadRequestException("User not found");
     }
     return this.buildDto(user);
-  }
-
-  async remove(id: string): Promise<void> {
-    await this.userRepository.delete(id);
   }
 
   buildDto(user: UserEntity): UserDto {

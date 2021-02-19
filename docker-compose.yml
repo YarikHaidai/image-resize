@@ -3,8 +3,13 @@ version: "3.3"
 services:
   mysql:
     image: mysql:5.7
+    restart: always
     ports:
       - "$ORM_PORT:$ORM_PORT"
+    volumes:
+      - data:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD="$ORM_PASSWORD"
       - MYSQL_DATABASE="$ORM_DATABASE"
+volumes:
+  data:

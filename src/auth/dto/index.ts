@@ -1,2 +1,2 @@
 export { RegisterUserDto } from './register-user.dto';
-export { LoginUserDto } from './login-user.dto';
+export { ResponseLoginDto } from './response-login.dto';

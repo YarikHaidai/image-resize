@@ -1,7 +1,7 @@
 import {
   Column,
   CreateDateColumn,
-  Entity,
+  Entity, JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
@@ -14,9 +14,6 @@ export class ImageEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => UserEntity, userEntity => userEntity.images)
-  user: UserEntity;
-
   @Column({ nullable: false })
   path: string;
 
@@ -25,4 +22,11 @@ export class ImageEntity {
 
   @UpdateDateColumn()
   updated_at: string;
+
+  @ManyToOne(() => UserEntity, userEntity => userEntity.images)
+  @JoinColumn({name: 'user_id'})
+  user: UserEntity;
+
+  @Column()
+  user_id: number;
 }
