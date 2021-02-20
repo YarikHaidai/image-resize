@@ -23,7 +23,7 @@ export class ImageService {
     const { width, height, path } = imageResizeDto;
 
     const resizeTransform = sharp()
-      .resize(width, height, {
+      .resize(Number(width), Number(height), {
         fit: sharp.fit.inside,
         withoutEnlargement: true
       });

@@ -1,4 +1,4 @@
-import { IsInt, IsString } from "class-validator";
+import { IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class ImageResizeDto {
@@ -7,10 +7,10 @@ export class ImageResizeDto {
   path: string;
 
   @ApiProperty()
-  @IsInt()
+  @IsString()
   height: number;
 
   @ApiProperty()
-  @IsInt()
+  @IsString()
   width: number;
 }

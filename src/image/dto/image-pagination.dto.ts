@@ -1,12 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsInt } from "class-validator";
+import { IsString } from "class-validator";
 
 export class ImagePaginationDto {
   @ApiProperty()
-  // @IsInt()
+  @IsString()
   page: number;
 
   @ApiProperty()
-  // @IsInt()
+  @IsString()
   limit: number;
 }

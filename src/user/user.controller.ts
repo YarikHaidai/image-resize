@@ -19,13 +19,7 @@ export class UserController {
   @ApiBearerAuth()
   @Get('/images')
   @ApiOkResponse({ type: ImageDto, isArray: true })
-  // TODO - ??????? paginationDto not valid
-  // async getImages(@Req() request, @Query() paginationDto: ImagePaginationDto): Promise<ImageDto[]> {
-  async getImages(@Req() request): Promise<ImageDto[]> {
-    const paginationDto = new ImagePaginationDto();
-    paginationDto.page = 1;
-    paginationDto.limit = 5;
-
+  async getImages(@Req() request, @Query() paginationDto: ImagePaginationDto): Promise<ImageDto[]> {
     return this.imageService.getUserImages(request.user.id, paginationDto);
   }
 
@@ -39,7 +33,7 @@ export class UserController {
   @ApiBearerAuth()
   @Get(":id")
   @ApiOkResponse({ type: UserDto })
-  getUser(@Param("id") id: string) {
+  getUser(@Param("id") id: string): Promise<UserDto> {
     return this.userService.findById(id);
   }
 
