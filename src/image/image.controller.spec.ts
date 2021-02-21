@@ -1,18 +1,29 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ImageController } from './image.controller';
-
-describe('ImageController', () => {
-  let controller: ImageController;
-
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [ImageController],
-    }).compile();
-
-    controller = module.get<ImageController>(ImageController);
-  });
-
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
-});
+// import { Test, TestingModule } from '@nestjs/testing';
+// import { ImageController } from './image.controller';
+// import { ImageService } from "./image.service";
+// import { getRepositoryToken } from "@nestjs/typeorm";
+// import { ImageEntity } from "./image.entity";
+// import { ImageDto } from "./dto";
+//
+// describe('ImageController', () => {
+//   let imageController: ImageController;
+//   let imageService: ImageService;
+//
+//   beforeEach(async () => {
+//     const module: TestingModule = await Test.createTestingModule({
+//       imports: [],
+//       providers: [
+//         ImageService,
+//         {
+//           provide: getRepositoryToken(ImageEntity),
+//           useValue: {},
+//         }
+//       ],
+//       controllers: [ImageController],
+//     }).compile();
+//
+//   });
+//
+//   it('test', () => {
+//   });
+// });

@@ -1,18 +1,51 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
+import { UserService } from "./user.service";
+import { ImageService } from "../image/image.service";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { ImageEntity } from "../image/image.entity";
 
 describe('UserController', () => {
-  let controller: UserController;
+  let imageService: ImageService;
+  let findOne : jest.Mock;
 
   beforeEach(async () => {
+    findOne = jest.fn();
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [UserController],
+      imports: [ ],
+      providers: [
+        ImageService,
+        {
+          provide: getRepositoryToken(ImageEntity),
+          useValue: {findOne},
+        }
+      ],
+      controllers: [  ]
     }).compile();
 
-    controller = module.get<UserController>(UserController);
+    imageService = await module.get(ImageService);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+
+  describe('when getting a image by id', () => {
+    describe('and the image is matched', () => {
+      let image: ImageEntity;
+      beforeEach(() => {
+        image = new ImageEntity();
+        findOne.mockReturnValue(Promise.resolve(image));
+      })
+      it('find user image', async () => {
+        const fetchImage = await imageService.getUserImage('1');
+        expect(image).toEqual(fetchImage);
+      });
+    })
+    describe('and the image is not matched', () => {
+      beforeEach(() => {
+        findOne.mockReturnValue(undefined);
+      })
+      it('should throw an error', async () => {
+        await expect(imageService.getUserImage('1')).rejects.toThrow();
+      })
+    })
+  })
 });
