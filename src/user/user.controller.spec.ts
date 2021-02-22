@@ -1,51 +1,43 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
-import { UserService } from "./user.service";
 import { ImageService } from "../image/image.service";
-import { getRepositoryToken } from "@nestjs/typeorm";
-import { ImageEntity } from "../image/image.entity";
+import { UserService } from "./user.service";
+import {UserDto} from "./dto";
 
 describe('UserController', () => {
+  let userController: UserController;
   let imageService: ImageService;
+  let userService: UserService;
   let findOne : jest.Mock;
 
   beforeEach(async () => {
     findOne = jest.fn();
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ ],
       providers: [
-        ImageService,
+        UserService,
         {
-          provide: getRepositoryToken(ImageEntity),
-          useValue: {findOne},
+          provide: UserService,
+          useFactory: () => ({
+            findById: jest.fn(() => true)
+          })
         }
       ],
-      controllers: [  ]
+      controllers: [UserController]
     }).compile();
 
     imageService = await module.get(ImageService);
   });
 
 
-  describe('when getting a image by id', () => {
-    describe('and the image is matched', () => {
-      let image: ImageEntity;
-      beforeEach(() => {
-        image = new ImageEntity();
-        findOne.mockReturnValue(Promise.resolve(image));
-      })
-      it('find user image', async () => {
-        const fetchImage = await imageService.getUserImage('1');
-        expect(image).toEqual(fetchImage);
-      });
+  describe('when getting a user by id', () => {
+    it('should return the user', async () => {
+      const user = new UserDto();
+      user.id = 1;
+      user.name = 'name';
+      user.email = 'email@test.com';
+
+      await userController.getUser('1');
+      expect(userService.findById).toHaveBeenCalledWith(user);
     })
-    describe('and the image is not matched', () => {
-      beforeEach(() => {
-        findOne.mockReturnValue(undefined);
-      })
-      it('should throw an error', async () => {
-        await expect(imageService.getUserImage('1')).rejects.toThrow();
-      })
-    })
-  })
+  });
 });
